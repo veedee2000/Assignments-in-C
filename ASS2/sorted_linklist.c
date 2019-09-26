@@ -153,19 +153,31 @@ struct link* reverse(struct link* head){
   return temp;
 }
 
+// void sort(struct link* head){                           BOTH THE METHODS WORK
+//     struct link *i = head, *j = head -> next;
+//     int temp;
+//     while(i->next != NULL){
+//         j = i -> next;
+//         while(j != NULL){
+//             if(i -> data > j -> data){
+//                 temp = i -> data;
+//                 i -> data = j -> data;
+//                 j -> data = temp;
+//             }
+//             j = j -> next;
+//         }
+//         i = i -> next;
+//     }
+// }
+
 void sort(struct link* head){
-    struct link *i = head, *j = head -> next;
-    int temp;
-    while(i->next != NULL){
-        j = i -> next;
-        while(j != NULL){
+    for(struct link* i = head; i -> next != NULL; i = i->next){
+        for(struct link* j = i -> next; j != NULL; j = j->next){
             if(i -> data > j -> data){
-                temp = i -> data;
+                int temp  = i -> data;
                 i -> data = j -> data;
                 j -> data = temp;
             }
-            j = j -> next;
         }
-        i = i -> next;
     }
 }
