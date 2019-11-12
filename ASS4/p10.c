@@ -1,19 +1,26 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include<string.h>
 
 int** adj_matrix;
 int n,m;
-int visited[100];
+int visited[100],printed[100];
 
-void dfs(int i){
+void dfs(int i,char s[50]){
     visited[i] = 1;
     int j;
     for(j = 1;j <= m;j++){
         if(i == j) continue;
         if(adj_matrix[i][j] && !visited[j]){
-            printf("-> %d ",j);
-            dfs(j);
+            // printf("-> %d ",j);
+            char result[50],v[50];
+            strcpy(v,s);
+            strcat(v," -> ");
+            sprintf(result,"%d",j);
+            strcat(v,result);
+            dfs(j,v);
         }
+        else if(visited[j] && !printed[j]) {printf("%s\n",s); printed[j] = 1;}
     }
 }
 
@@ -27,6 +34,7 @@ int main(){
     }
     for(i = 1;i <= m;i++){
         visited[i] = 0;
+        printed[i] = 0;
         for(j = 1;j <= m;j++){
             if(i == j) adj_matrix[i][j] = 1;
             else adj_matrix[i][j] = 0;
@@ -43,9 +51,10 @@ int main(){
     printf("DFS :- \n");
     for(i = 1;i <= m;i++){
         if(!visited[i]){
-            printf("%d ",i);
-            dfs(i);
-            printf("\n");
+            // printf("%d ",i);
+            char result[50];
+            sprintf(result,"%d",i); 
+            dfs(i,result);
         }
     }
 
