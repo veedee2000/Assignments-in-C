@@ -1,5 +1,10 @@
 #include<stdio.h>
 
+/*  COMPLEXITY - n^2
+    STABLE 
+    SORTING IN PLACE
+*/
+
 int main(){
     int n;
     printf("Enter the size of the array: ");
