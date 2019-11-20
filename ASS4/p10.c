@@ -1,63 +1,91 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
-int** adj_matrix;
-int n,m;
-int visited[100],printed[100];
+#define max_size 100
 
-void dfs(int i,char s[50]){
-    visited[i] = 1;
-    int j;
-    for(j = 1;j <= m;j++){
-        if(i == j) continue;
-        if(adj_matrix[i][j] && !visited[j]){
-            // printf("-> %d ",j);
-            char result[50],v[50];
-            strcpy(v,s);
-            strcat(v," -> ");
-            sprintf(result,"%d",j);
-            strcat(v,result);
-            dfs(j,v);
-        }
-        else if(visited[j] && !printed[j]) {printf("%s\n",s); printed[j] = 1;}
-    }
+int m, n;
+int adj[max_size+1][max_size+1];
+int pointer[max_size+1];
+int visited[max_size+1];
+
+int queue[max_size];
+int front = -1;
+int rear = -1;
+
+void enqueue(int val){
+	if(front == -1){
+		front++;
+		rear++;
+	}
+	else
+		rear++;
+	queue[rear] = val;
 }
 
-int main(){
-    int i,j;
-    printf("Enter the maximum number of vertices: ");
-    scanf("%d",&m);
-    adj_matrix = (int **)(malloc((m + 1) * sizeof(int*)));
-    for(i = 0;i <= m;i++){
-        adj_matrix[i] = (int *)(malloc((m + 1) * sizeof(int)));
-    }
-    for(i = 1;i <= m;i++){
-        visited[i] = 0;
-        printed[i] = 0;
-        for(j = 1;j <= m;j++){
-            if(i == j) adj_matrix[i][j] = 1;
-            else adj_matrix[i][j] = 0;
-        }
-    }
-    printf("Enter the number of edges: ");
-    scanf("%d",&n);
-    for(i = 0;i < n;i++){
-        int a,b;
-        printf("Enter the edges: ");
-        scanf("%d%d",&a,&b);
-        adj_matrix[a][b] = 1;
-    }
-    printf("DFS :- \n");
-    for(i = 1;i <= m;i++){
-        if(!visited[i]){
-            // printf("%d ",i);
-            char result[50];
-            sprintf(result,"%d",i); 
-            dfs(i,result);
-        }
-    }
+int dequeue(){
+	int res  = queue[rear];
+	rear --;
+	if(rear == -1)
+		front = -1;
+	return res;
+}
 
+int isempty(){
+	if(front == -1)
+		return 1;
+	return 0;
+}
 
-    return 0;
+void DFS(int node,int parent){
+	printf("%d ", node);
+	int i;
+	for(i = 0; i < pointer[node]; i++){
+		if(adj[node][i] != parent)
+			DFS(adj[node][i], node);
+	}
+}
+
+void BFS(int node){
+	printf("%d ", node);
+	visited[node] = 1;
+	enqueue(node);
+	while(!isempty()){
+		int head = dequeue();
+		for(int i = 0; i < pointer[head]; i++){
+			if(visited[adj[head][i]] == 0){
+				printf("%d ", adj[head][i]);
+				visited[adj[head][i]] = 1;
+				enqueue(adj[head][i]);
+			}
+		}
+	}
+}
+
+int main(void) {
+    printf("Enter number of nodes: ");
+	scanf("%d", &n);
+	printf("Enter number of edges: ");
+	scanf("%d", &m);
+	for(int i = 1; i <= n; i++){
+		pointer[i] = 0;
+	}
+	for(int i = 1; i <= n; i++){
+		visited[i] = 0;
+	}
+	printf("Enter edges:\n");
+	for(int i = 0; i < m; i++){
+		int u,v;
+		scanf("%d %d", &u, &v);
+		adj[u][pointer[u]] = v;
+		adj[v][pointer[v]] = u;
+		pointer[u]++;
+		pointer[v]++;
+	}
+	printf("DFS traversal:\n");
+	DFS(1,0);
+	printf("\n");
+	printf("BFS traversal:\n");
+	BFS(1);
+    printf("\n");
+	return 0;
 }
