@@ -41,17 +41,21 @@ int main(){
     }
     printf("\n\n");
     printf("Linked List\n");
-    struct link* head = NULL;
+    struct link* head[7];
     for(i = 0;i < n;i++){
+        head[i] = NULL;
         for(j = 0;j < m;j++){
-            if(matrix[i][j] != 0) head = create(head,matrix[i][j],i,j);
+            if(matrix[i][j] != 0) head[i] = create(head[i],matrix[i][j],i,j);
         }
     }
-    struct link* p = head;
-    while(p){
-        printf("Row: %d  Column: %d  Value: %f\n",p -> row,p -> column,p -> val);
-        p = p -> next;
+    for(i = 0;i < 7;i++){
+        struct link* p = head[i];
+        while(p){
+            printf("Row: %d  Column: %d  Value: %f\n",p -> row,p -> column,p -> val);
+            p = p -> next;
+        }
     }
+    
     return 0;
 }
 
