@@ -1,70 +1,137 @@
-#include<stdio.h>
-#include<stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 struct tree{
-    int data;
-    struct tree* left;
-    struct tree* right;
+  int data;
+  struct tree* left;
+  struct tree* right;
 };
+typedef struct tree node;
 
-struct tree* create(int val){
-    struct tree* node = (struct tree*)(malloc(sizeof(struct tree)));
-    node -> data = val;
-    node -> left = NULL;
-    node -> right = NULL;
-    return node;
-}
+node* create(int x);
+node* insert(node* root, int x);
+void inorder(node* root);
+node* deleteNode(node* root, int x);
+node * minValueNode( node* node);
+int maxValue(node* node);
 
-struct tree* insert(struct tree* node, int val){
-    if(!node) return create(val);
-    else if(node -> data >= val) node -> left = insert(node -> left,val);
-    else node -> right = insert(node -> right,val);
-    return node;
-}
-
-void search(int val){
+int main(void) {
+  
+  node* root = NULL;
+  int choice;
+  int val;
+  while(1){
     
-}
+    printf("\n1-Insert New Node \n2-Delete Node  \n3-Find Max \n4-Find Min \n5-Exit \nEnter the choice: ");
+    scanf("%d", &choice);
 
-void display(struct tree* node){
-    struct tree* a[100];
-    int front = 0;
-    int rear = 0;
-    a[0] = node;
-    printf("%d\n",node -> data);
-    while(front <= rear){
-        struct tree* current = a[front];
-        front++;
-        if(current -> left) {
-            printf("%d\n",current -> left -> data);
-            a[++rear] = current -> left;
-        }
-        else printf("NULL\n");
-
-        if(current -> right){
-            printf("%d\n",current -> right -> data);
-            a[++rear] = current -> right;
-        }
-        else printf("NULL\n");
+    switch(choice){
+      case 1:  {
+        printf("Enter the val to insert: ");
+        scanf("%d", &val);
+        root = insert(root, val);
+        printf("Inorder traversal after insertion: ");
+        inorder(root);
+        printf("\n");
+        break;
+      } 
+      case 2:{  
+        printf("Enter the node val to delete: ");  
+        scanf("%d", &val);
+        root = deleteNode(root, val);
+        printf("Inorder traversal after deletion: ");
+        inorder(root);
+        printf("\n");
+        break;
+      }
+      case 3: {
+        printf("Max valued node is: %d", maxValue(root));
+        break;
+      }
+      case 4: {
+        printf("Min valued node is: %d", (minValueNode(root)->data));
+        break;
+      }      
+      case 5: exit(0);
     }
+
+  } 
+   
+  return 0;
 }
 
-int main(){
-    int n;
-    printf("Enter the number of nodes: ");
-    scanf("%d",&n);
-    struct tree* root = NULL;
-    while(n--){
-        int val;
-        printf("Enter the value of the node: ");
-        scanf("%d",&val);
-        root = insert(root,val);
-    }
-    display(root);
-    int del;
-    printf("Enter the value of the node to be deleted: ");
-    scanf("%d",&del);
-    search(del);
-
-    return 0;
+void inorder(node* root){
+  if(root == NULL)
+    return;
+  inorder(root->left);
+  printf("%d ", root->data);
+  inorder(root->right);
 }
+
+node* insert(node* root, int x){
+  if(root == NULL)
+    return create(x);
+  if(x < root->data)
+    root->left = insert(root->left, x);
+  else if(x > root->data)
+    root->right = insert(root->right, x);
+  return root;
+}
+
+node* create(int x){
+  node* t = (node*) malloc(sizeof(node));
+  t->data = x;
+  t->left = NULL;
+  t->right = NULL;
+  return t;
+}
+
+node * minValueNode(node* root) 
+{ 
+    node* current = root; 
+    while (current && current->left != NULL) 
+        current = current->left;   
+    return current; 
+}
+
+int maxValue( node* root) 
+{    
+    node* current = root; 
+    while (current && current->right != NULL)  
+        current = current->right;   
+    return (current->data); 
+} 
+  
+node* deleteNode(node* root, int key) 
+{ 
+    if (root == NULL) return root; 
+  
+    if (key < root->data) 
+        root->left = deleteNode(root->left, key); 
+    else if (key > root->data) 
+        root->right = deleteNode(root->right, key); 
+    else
+    { 
+        
+        if (root->left == NULL) 
+        { 
+            node *temp = root->right; 
+            free(root); 
+            return temp; 
+        } 
+        else if (root->right == NULL) 
+        { 
+            node *temp = root->left; 
+            free(root); 
+            return temp; 
+        } 
+  
+        node* temp = minValueNode(root->right); 
+   
+        root->data = temp->data; 
+  
+         
+        root->right = deleteNode(root->right, temp->data); 
+    } 
+    return root; 
+} 
